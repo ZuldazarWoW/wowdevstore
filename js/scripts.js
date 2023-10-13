@@ -17,8 +17,8 @@ function loadProducts(category) {
     const productCardsContainer = $("#product-cards");
 
     // Cargar la lista de productos de la categoría
-    $.getJSON(`categories/${category}.json`, function (data) {
-        data.products.forEach((product, index) => {
+    $.getJSON(`categories/${category}/products.json`, function (data) {
+        data.forEach((product, index) => {
             const card = `
                 <div class="col-md-4 mb-3">
                     <div class="card">
@@ -55,7 +55,7 @@ function showProductDetails(index, category) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <img src="${product.image}" class="img-fluid" alt="${product.title}">
+                            <img src="${product.image}" class="img-fluid" alt "${product.title}">
                             <p>${product.description}</p>
                             <p>Precio: ${product.price}</p>
                         </div>
