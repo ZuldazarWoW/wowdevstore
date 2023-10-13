@@ -12,12 +12,12 @@ const categories = {
 
 // Función para cargar productos basados en la categoría
 function loadProducts(category) {
-    // Carga las tarjetas de productos de la categoría
-    $.getJSON(`categories/${category}.json`, function (data) {
-        const categoryTitle = categories[category] || "Categoría Desconocida";
-        $("#category-title").text(categoryTitle);
-        const productCardsContainer = $("#product-cards");
+    const categoryTitle = categories[category] || "Categoría Desconocida";
+    $("#category-title").text(categoryTitle);
+    const productCardsContainer = $("#product-cards");
 
+    // Cargar la lista de productos de la categoría
+    $.getJSON(`categories/${category}.json`, function (data) {
         data.products.forEach((product, index) => {
             const card = `
                 <div class="col-md-4 mb-3">
