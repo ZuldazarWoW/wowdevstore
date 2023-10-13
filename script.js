@@ -47,6 +47,7 @@ $(document).ready(function () {
             name: productData[0].trim(),
             description: productData[1].trim(),
             image: productData[2].trim(),
+	    price: productData[3].trim(),
             // Agrega más campos según tus necesidades
         };
         return productInfo;
