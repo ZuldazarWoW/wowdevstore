@@ -1,49 +1,80 @@
-// Función para cargar las categorías
-function loadCategories() {
-    const categoryList = document.getElementById('category-list');
-    // Recorre las carpetas en el directorio "category" y agrega las categorías de forma automática
-    fetchCategories().then(categories => {
-        categories.forEach(category => {
-            const categoryLink = document.createElement('li');
-            categoryLink.innerHTML = `<a class="nav-link" href="#${category}">${category}</a>`;
-            categoryList.appendChild(categoryLink);
-        });
+$(document).ready(function () {
+    const categoriesPath = 'categories/';
+
+    // Obtener la lista de categorías (directorios)
+    $.ajax({
+        url: categoriesPath,
+        success: function (categoryList) {
+            const categories = categoryList.split('\n').filter(Boolean);
+
+            // Recorrer cada categoría
+            categories.forEach(function (category) {
+                const categoryPath = categoriesPath + category;
+
+                // Obtener la lista de productos en esta categoría
+                $.ajax({
+                    url: categoryPath,
+                    success: function (productList) {
+                        const products = productList.split('\n').filter(Boolean);
+
+                        // Recorrer cada producto
+                        products.forEach(function (product) {
+                            const productPath = categoryPath + '/' + product;
+
+                            // Cargar y procesar el contenido del archivo .md
+                            $.ajax({
+                                url: productPath,
+                                dataType: 'text',
+                                success: function (productData) {
+                                    const productInfo = parseProductMarkdown(productData);
+                                    createProductCard(productInfo);
+                                }
+                            });
+                        });
+                    }
+                });
+            });
+        }
     });
-}
 
-// Función para cargar productos de una categoría
-function loadProducts(category) {
-    // Carga los productos desde los archivos Markdown de la categoría
-    fetchProducts(category).then(products => {
-        displayProducts(products);
-    });
-}
+    // Función para analizar el contenido del archivo .md del producto
+    function parseProductMarkdown(markdownData) {
+        // Analiza el contenido y extrae los datos necesarios (nombre, imagen, descripción, etc.)
+        // Retorna un objeto con la información del producto
+        // Ejemplo:
+        const productData = markdownData.split('---'); // Suponiendo que los datos estén separados por '---'
+        const productInfo = {
+            name: productData[0].trim(),
+            description: productData[1].trim(),
+            image: productData[2].trim(),
+            // Agrega más campos según tus necesidades
+        };
+        return productInfo;
+    }
 
-// Función para mostrar productos en la página principal
-function displayProducts(products) {
-    const productsContainer = document.getElementById('products-container');
-    productsContainer.innerHTML = '';
-
-    products.forEach(product => {
-        const productCard = `
-            <div class="col-md-4">
-                <div class="card">
-                    <img src="${product.image}" class="card-img-top" alt="${product.title}" style="width: 100%;">
-                    <div class="card-body">
-                        <h5 class="card-title">${product.title}</h5>
-                        <p class="card-text">${product.description}</p>
-                        <p class="card-text">Precio: $${product.price}</p>
-                        <a href="#${product.id}" class="btn btn-primary">Ver Más</a>
-                    </div>
-                </div>
-            </div>
+    // Función para crear una tarjeta de producto en HTML
+    function createProductCard(productInfo) {
+        // Crea una tarjeta Bootstrap utilizando los datos del producto
+        const cardHtml = `
+    <div class="col">
+		<div class="card text-bg-dark mb-3" style="max-width: 18rem;">
+			<div class="card-header">
+			<img src="${productInfo.image}" class="card-img-top" alt="${productInfo.name}"/>
+			</div>
+			<div class="card-body">
+				<h5 class="card-title">${productInfo.name}</h5>
+				<hr>
+				<p class="card-text">${productInfo.description}</p>
+				<hr>
+				<p class="card-text"><b>Price: </b>${productInfo.price}</p>
+				<hr>
+				<a href="https://wa.me/573209135899" class="btn btn-primary">Comprar</a>
+			</div>
+		</div>
+		</div>
         `;
 
-        productsContainer.innerHTML += productCard;
-    });
-}
-
-// Cargar categorías y productos al cargar la página
-window.addEventListener('load', () => {
-    loadCategories();
+        // Agrega la tarjeta al contenedor en index.html
+        $('.productos').append(cardHtml);
+    }
 });
