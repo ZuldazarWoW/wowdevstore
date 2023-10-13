@@ -17,25 +17,22 @@ function loadProducts(category) {
     const productCardsContainer = $("#product-cards");
 
     // Cargar la lista de productos de la categoría
-    $.getJSON(`categories/${category}/products.json`, function (data) {
-        data.forEach((product, index) => {
-            const card = `
-                <div class="col-md-4 mb-3">
-                    <div class="card">
-                        <img src="${product.image}" class="card-img-top" alt="${product.title}">
-                        <div class="card-body">
-                            <h5 class="card-title">${product.title}</h5>
-                            <p class="card-text">${product.description}</p>
-                            <p class="card-text">Precio: ${product.price}</p>
-                            <a class="btn btn-primary" href="categories.html?category=${category}&product=${index}">Ver más</a>
-                        </div>
+    $.getJSON(`categories/${category}/product${productIndex}.json`, function (product) {
+        const card = `
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                    <div class="card-body">
+                        <h5 class="card-title">${product.title}</h5>
+                        <p class="card-text">${product.description}</p>
+                        <p class="card-text">Precio: ${product.price}</p>
                     </div>
                 </div>
-            `;
-            productCardsContainer.append(card);
-        });
+            </div>
+        `;
+        productCardsContainer.append(card);
     }).fail(function () {
-        // Si hay un error al cargar la categoría, muestra un mensaje de error.
+        // Si hay un error al cargar el producto, muestra un mensaje de error.
         $("#category-title").text("Error al cargar la categoría");
     });
 }
