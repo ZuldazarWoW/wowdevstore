@@ -6,7 +6,7 @@ const productIndex = urlParams.get("product");
 // Lista de categorías y sus nombres
 const categories = {
     themes: "Themes",
-    modules: "Modules",
+    modules: "Modules"
     // Agrega más categorías según sea necesario
 };
 
@@ -34,13 +34,16 @@ function loadProducts(category) {
             `;
             productCardsContainer.append(card);
         });
+    }).fail(function () {
+        // Si hay un error al cargar la categoría, muestra un mensaje de error.
+        $("#category-title").text("Error al cargar la categoría");
     });
 }
 
 // Función para mostrar detalles de un producto
 function showProductDetails(index, category) {
     // Cargar el producto desde un archivo separado
-    $.getJSON(`categories/${category}/${index}.json`, function (product) {
+    $.getJSON(`categories/${category}/product${index}.json`, function (product) {
         const modal = `
             <div class="modal fade" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -61,6 +64,9 @@ function showProductDetails(index, category) {
             </div>
         `;
         $(modal).modal("show");
+    }).fail(function () {
+        // Si hay un error al cargar el producto, muestra un mensaje de error.
+        alert("Error al cargar el producto");
     });
 }
 
