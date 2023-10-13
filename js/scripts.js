@@ -2,10 +2,18 @@ $(document).ready(function () {
     // Obtén el parámetro "category" de la URL
     const urlParams = new URLSearchParams(window.location.search);
     const category = urlParams.get("category");
+    const productToDisplay = urlParams.get("product");
+
+    // Lista de categorías y sus nombres (actualiza con tus propias categorías)
+    const categories = {
+        themes: "Themes",
+        modules: "Modules"
+        // Agrega más categorías según sea necesario
+    };
 
     // Función para cargar productos basados en la categoría
     function loadProducts(category) {
-        const categoryTitle = category.charAt(0).toUpperCase() + category.slice(1); // Capitalizar la categoría
+        const categoryTitle = categories[category] || "Categoría Desconocida";
         $("#category-title").text(categoryTitle);
         const productCardsContainer = $("#product-cards");
 
@@ -40,6 +48,18 @@ $(document).ready(function () {
         });
     }
 
+    // Función para cargar un solo producto en detalle
+    function loadProductDetail(category, productFile) {
+        $.ajax({
+            url: `categories/${category}/${productFile}`,
+            success: function (productData) {
+                const product = parseProductData(productData);
+                // Mostrar los detalles del producto en la página
+                // Esto debe implementarse en product.html
+            }
+        });
+    }
+
     // Función para analizar los datos del producto desde el archivo .md
     function parseProductData(data) {
         const metadata = data.match(/---([\s\S]*?)---/)[1];
@@ -55,8 +75,18 @@ $(document).ready(function () {
         return product;
     }
 
-    // Cargar productos según la categoría
+    // Cargar enlaces a las categorías en la barra de navegación
+    const categoryLinksContainer = $("#category-links");
+    for (const cat in categories) {
+        categoryLinksContainer.append(`<a class="btn btn-primary mr-2" href="categories.html?category=${cat}">${categories[cat]}</a>`);
+    }
+
     if (category) {
-        loadProducts(category);
+        // Si se proporciona un producto específico, cargar solo ese producto
+        if (productToDisplay) {
+            loadProductDetail(category, productToDisplay);
+        } else {
+            loadProducts(category);
+        }
     }
 });
