@@ -55,7 +55,7 @@ function showProductDetails(index, category) {
                             </button>
                         </div>
                         <div class="modal-body">
-                            <img src="${product.image}" class="img-fluid" alt "${product.title}">
+                            <img src="${product.image}" class="img-fluid" alt="${product.title}">
                             <p>${product.description}</p>
                             <p>Precio: ${product.price}</p>
                         </div>
