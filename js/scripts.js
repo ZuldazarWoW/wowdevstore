@@ -16,25 +16,47 @@ function loadProducts(category) {
     $("#category-title").text(categoryTitle);
     const productCardsContainer = $("#product-cards");
 
-    // Cargar la lista de productos de la categoría
-    $.getJSON(`categories/${category}/product${productIndex}.json`, function (product) {
-        const card = `
-            <div class="col-md-4 mb-3">
-                <div class="card">
-                    <img src="${product.image}" class="card-img-top" alt="${product.title}">
-                    <div class="card-body">
-                        <h5 class="card-title">${product.title}</h5>
-                        <p class="card-text">${product.description}</p>
-                        <p class="card-text">Precio: ${product.price}</p>
+    if (productIndex === null) {
+        // Cargar todos los productos de la categoría
+        for (let i = 0; i < 2; i++) { // Carga productos 0 y 1
+            $.getJSON(`categories/${category}/product${i}.json`, function (product) {
+                const card = `
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.title}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <p class="card-text">Precio: ${product.price}</p>
+                                <a class="btn btn-primary" href="categories.html?category=${category}&product=${i}">Ver más</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                productCardsContainer.append(card);
+            });
+        }
+    } else {
+        // Cargar un producto específico
+        $.getJSON(`categories/${category}/product${productIndex}.json`, function (product) {
+            const card = `
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <img src="${product.image}" class="card-img-top" alt="${product.title}">
+                        <div class="card-body">
+                            <h5 class="card-title">${product.title}</h5>
+                            <p class="card-text">${product.description}</p>
+                            <p class="card-text">Precio: ${product.price}</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        productCardsContainer.append(card);
-    }).fail(function () {
-        // Si hay un error al cargar el producto, muestra un mensaje de error.
-        $("#category-title").text("Error al cargar la categoría");
-    });
+            `;
+            productCardsContainer.append(card);
+        }).fail(function () {
+            // Si hay un error al cargar el producto, muestra un mensaje de error.
+            $("#category-title").text("Error al cargar el producto");
+        });
+    }
 }
 
 // Función para mostrar detalles de un producto
